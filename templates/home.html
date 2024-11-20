@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container text-center">
+    <h1 class="mt-5">Welcome to the AI-Powered Time Management Assistant</h1>
+    <p class="mt-3">Manage your time and tasks efficiently.</p>
+    <div class="mt-4">
+        <a href="{% url 'myapp:login' %}" class="btn btn-primary btn-lg">Login</a>
+    </div>
+</div>
+{% endblock %}

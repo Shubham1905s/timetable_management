@@ -1,0 +1,41 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+h2 {
+    color: #0056b3;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.table {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+.btn-sm {
+    margin: 0 5px;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 18px;
+    }
+    
+    .table th, .table td {
+        font-size: 14px;
+    }
+}
