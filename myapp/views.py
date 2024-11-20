@@ -82,6 +82,7 @@ def register_view(request):
         email = request.POST['email']
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
+        role = request.POST.get('role')  # Get role from the form
 
         # Check if passwords match
         if password != confirm_password:
@@ -93,14 +94,20 @@ def register_view(request):
             messages.error(request, "Email already exists.")
             return redirect('myapp:register')
 
-        # Create new user using custom model
+        # Create new user and assign role
         user = User.objects.create_user(username=email, password=password)
+        if role == 'professor':
+            user.is_professor = True
+            user.is_student = False
+        elif role == 'student':
+            user.is_student = True
+            user.is_professor = False
         user.save()
 
         # Log the user in after registration
-        login(request, user)
+        login(request)
 
-        # Redirect to dashboard (or any other page after successful registration)
+        # Redirect to the appropriate dashboard
         if user.is_professor:
             return redirect('myapp:professor_dashboard')
         else:
