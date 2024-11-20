@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<h1>Dashboard</h1>
+{% if timetable %}
+<h2>Your Timetable</h2>
+<table>
+  <tr>
+    <th>Day</th>
+    <th>Time Slot</th>
+    <th>Subject</th>
+    <th>Availability</th>
+  </tr>
+  {% for entry in timetable %}
+  <tr>
+    <td>{{ entry.day }}</td>
+    <td>{{ entry.time_slot }}</td>
+    <td>{{ entry.subject }}</td>
+    <td>{{ entry.is_available|yesno:"Available,Not Available" }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No timetable found. Add your timetable below.</p>
+{% endif %}
+<a href="{% url 'myapp:add_timetable' %}">Add Timetable</a>
+{% endblock %}

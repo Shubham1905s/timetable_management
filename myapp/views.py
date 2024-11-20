@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.core.mail import send_mail
 from .models import Timetable, User
+from .forms import TimetableForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -10,7 +11,22 @@ User = get_user_model()
 
 
 def home(request):
-    return render(request, 'base.html')
+    return render(request, 'home.html')
+
+@login_required
+def add_timetable(request):
+    if request.method == 'POST':
+        form = TimetableForm(request.POST)
+        if form.is_valid():
+            timetable_entry = form.save(commit=False)
+            timetable_entry.user = request.user
+            timetable_entry.save()
+            messages.success(request, "Timetable entry added successfully.")
+            return redirect('myapp:dashboard')  # Redirect to the dashboard
+    else:
+        form = TimetableForm()
+
+    return render(request, 'add_timetable.html', {'form': form})
 
 @login_required
 def professor_dashboard(request):
@@ -40,7 +56,11 @@ def login_view(request):
         else:
             messages.error(request, 'Invalid credentials')
     return render(request, 'login.html')
-            
+
+def logout_view(request):
+    logout(request, user)
+    return redirect('myapp:login')
+                
 def send_slot_notification(professor_email, message):
     send_mail(
         'Timetable Slot Update',
@@ -50,11 +70,11 @@ def send_slot_notification(professor_email, message):
         fail_silently=False,
     )
     
+@login_required
 def dashboard_view(request):
-    if request.user.is_professor:
-        timetable = Timetable.objects.filter(user=request.user)
-    else:
-        timetable = Timetable.objects.filter(branch=request.user.branch, year=request.user.year)
+    timetable = Timetable.objects.filter(user=request.user)
+    if not timetable.exists():
+        timetable = None  # Set to None if no timetable is found
     return render(request, 'dashboard.html', {'timetable': timetable})
 
 def register_view(request):
